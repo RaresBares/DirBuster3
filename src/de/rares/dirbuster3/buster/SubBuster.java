@@ -1,6 +1,5 @@
 package de.rares.dirbuster3.buster;
 
-import com.sun.tools.javac.Main;
 import de.rares.dirbuster3.DirBuster3;
 import de.rares.dirbuster3.dir.Dir;
 
@@ -11,18 +10,25 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-public class Buster extends Thread {
+public class SubBuster extends Thread {
     File list;
     Dir parent;
     String url;
 
-    public Buster( URL main) {
+    public SubBuster(File list, Dir parent) {
         this.list = list;
-        this.parent = DirBuster3.Maindir;
-
+        this.parent = parent;
+        generateURL();
     }
 
-
+    private void generateURL() {
+        Dir localParent = parent;
+        do {
+            url = localParent.name + "/" + url;
+        }
+        while (localParent.hasParent());
+        url = DirBuster3.url + "/" + url;
+    }
     public boolean test(URL url){
         try {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -39,9 +45,9 @@ public class Buster extends Thread {
     @Override
     public void run() {
         try {
-           String str;
-            while ((str = DirBuster3.getSavenext()) != null){
-                String  dirnam = str;
+            Scanner scanner = new Scanner(list);
+            while (scanner.hasNextLine()){
+               String  dirnam = scanner.nextLine();
                 String localUrl = url + "/"+dirnam;
                 if(test(new URL(localUrl))){
                     Dir dir = new Dir(dirnam);

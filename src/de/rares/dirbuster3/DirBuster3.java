@@ -10,8 +10,22 @@ public class DirBuster3 {
 public static String url;
 public static int threads;
 public static Scanner lsc;
+public static int activeThreads;
 public static Dir Maindir = new Dir("/");
 public static ArrayList<Dir> Maindirs = new ArrayList<>();
+
+    public static String getSavenext(){
+
+        synchronized (lsc){
+            if(lsc.hasNextLine()){
+                return lsc.nextLine();
+            }else {
+                return null;
+            }
+        }
+
+    }
+
     public static void main(String[] args) throws FileNotFoundException {
         System.out.println("Please enter the URL:");
         Scanner sc = new Scanner(System.in);
@@ -20,7 +34,10 @@ public static ArrayList<Dir> Maindirs = new ArrayList<>();
         String glist = sc.nextLine();
         System.out.println("How many Threads would you need?");
          threads = sc.nextInt();
+         System.out.println("Starting Buster");
+        for (int i = 0; i < threads; i++) {
 
+        }
     }
 
     }
